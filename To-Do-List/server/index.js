@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
 app.use(cors());
 app.use(express.json());
 
@@ -26,7 +27,8 @@ app.post("/product", (req, res) => {
       res.send("Internal Server Error");
     } else {
       const newdata = JSON.parse(data);
-      newdata.push(req.body);
+      const newProduct = { ...req.body, id: uuidv4() }; // Generate a unique ID
+      newdata.push(newProduct);
       fs.writeFile("./db.json", JSON.stringify(newdata), (err) => {
         if (err) {
           res.send("Internal Server Error");
